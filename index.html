@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RiskSizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <div class="bg-orb bg-orb-a"></div>
+    <div class="bg-orb bg-orb-b"></div>
+
+    <main class="app-card">
+      <section class="hero">
+        <p class="eyebrow">Pure Frontend Position Sizing</p>
+        <h1>RiskSizer</h1>
+        <p class="hero-copy">
+          以固定風險 USDT 反推倉位大小。支援 MEXC 交易對搜尋、最新價格帶入、手動覆寫與即時計算。
+        </p>
+      </section>
+
+      <section class="panel panel-form">
+        <div class="panel-heading">
+          <h2>Trade Inputs</h2>
+          <p>選交易對後會自動抓最新價，仍可手動覆蓋 entry price。</p>
+        </div>
+
+        <div class="grid">
+          <label class="field field-wide">
+            <span>Search Symbol</span>
+            <div class="search-wrap">
+              <input id="symbolSearch" type="text" placeholder="輸入 BTC、ETH、SOL..." autocomplete="off">
+              <div id="symbolResults" class="search-results" hidden></div>
+            </div>
+            <small id="selectedSymbolLabel">尚未選取交易對</small>
+          </label>
+
+          <label class="field">
+            <span>Side</span>
+            <select id="side">
+              <option value="LONG">LONG</option>
+              <option value="SHORT">SHORT</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Risk USDT</span>
+            <input id="riskUsdt" type="number" min="0" step="0.01" value="50">
+          </label>
+
+          <label class="field">
+            <span>Entry Price</span>
+            <input id="entryPrice" type="number" min="0" step="0.00000001" placeholder="自動帶入或手動輸入">
+          </label>
+
+          <label class="field">
+            <span>Stop Loss Price</span>
+            <input id="stopPrice" type="number" min="0" step="0.00000001" placeholder="輸入停損價">
+          </label>
+
+          <label class="field">
+            <span>Take Profit Price</span>
+            <input id="takeProfitPrice" type="number" min="0" step="0.00000001" placeholder="可選，輸入止盈價">
+          </label>
+
+          <div class="field button-stack">
+            <span>Price Tools</span>
+            <button id="latestPriceBtn" class="secondary-btn" type="button">使用最新價格</button>
+            <button id="refreshPairsBtn" class="ghost-btn" type="button">重新載入交易對</button>
+          </div>
+        </div>
+
+        <div class="status-row">
+          <div id="statusMessage" class="status-pill neutral">準備就緒</div>
+          <div class="meta-note">Position buffer: <strong>0.98</strong></div>
+        </div>
+      </section>
+
+      <section class="panel panel-results">
+        <div class="panel-heading">
+          <h2>Output</h2>
+          <p>重點是能承受指定風險下的建議倉位大小。</p>
+        </div>
+
+        <div class="result-grid">
+          <article class="result-card result-focus">
+            <span class="result-label">Position USDT</span>
+            <strong id="positionUsdtValue" class="result-value">--</strong>
+            <small>已套用 0.98 buffer</small>
+          </article>
+
+          <article class="result-card">
+            <span class="result-label">Qty</span>
+            <strong id="qtyValue" class="result-value">--</strong>
+          </article>
+
+          <article class="result-card">
+            <span class="result-label">Entry</span>
+            <strong id="entryValue" class="result-value">--</strong>
+          </article>
+
+          <article class="result-card">
+            <span class="result-label">Stop</span>
+            <strong id="stopValue" class="result-value">--</strong>
+          </article>
+
+          <article class="result-card">
+            <span class="result-label">Distance</span>
+            <strong id="distanceValue" class="result-value">--</strong>
+          </article>
+
+          <article class="result-card">
+            <span class="result-label">Estimated Loss</span>
+            <strong id="lossValue" class="result-value">--</strong>
+          </article>
+
+          <article class="result-card">
+            <span class="result-label">Estimated Profit</span>
+            <strong id="profitValue" class="result-value">--</strong>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
