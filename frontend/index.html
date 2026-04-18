@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RiskSizer Order</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+  <div class="page-shell">
+    <div class="page-noise"></div>
+
+    <main class="app-shell">
+      <section class="hero-card">
+        <div>
+          <p class="eyebrow">Frontend + FastAPI Execution Split</p>
+          <h1>RiskSizer Order</h1>
+          <p class="hero-copy">
+            這個版本改成 MEXC USDT 永續合約。前端負責搜尋合約、抓取報價與試算，
+            後端負責抓送單瞬間的最新市價、切最大槓桿、簽名並送出合約市價單。
+          </p>
+        </div>
+
+        <div class="hero-meta">
+          <div class="meta-card">
+            <span>Backend</span>
+            <strong id="healthStatus">Checking...</strong>
+            <small id="healthDetail">Connecting to API</small>
+          </div>
+          <div class="meta-card">
+            <span>Order Mode</span>
+            <strong id="orderMode">--</strong>
+            <small>Max leverage is applied before order submit</small>
+          </div>
+          <div class="meta-card">
+            <span>Formula</span>
+            <strong>0.98 Buffer</strong>
+            <small>Risk-controlled position sizing</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel-grid">
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">Trade Inputs</p>
+              <h2>Market Setup</h2>
+            </div>
+            <button id="refreshPairsBtn" class="ghost-btn" type="button">Refresh Symbols</button>
+          </div>
+
+          <div class="form-grid">
+            <label class="field field-wide">
+              <span>Search Symbol</span>
+              <div class="search-wrap">
+                <input id="symbolSearch" type="text" placeholder="BTC, ETH, SOL..." autocomplete="off">
+                <div id="symbolResults" class="search-results" hidden></div>
+              </div>
+              <small id="selectedSymbolLabel">No contract selected</small>
+            </label>
+
+            <label class="field">
+              <span>Side</span>
+              <select id="side">
+                <option value="LONG">LONG</option>
+                <option value="SHORT">SHORT</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Risk USDT</span>
+              <input id="riskUsdt" type="number" min="0" step="0.01" value="50">
+            </label>
+
+            <label class="field">
+              <span>Entry Price</span>
+              <input id="entryPrice" type="number" min="0" step="0.00000001" placeholder="Used for preview; order submit will refresh latest market price">
+            </label>
+
+            <label class="field">
+              <span>Stop Loss Price</span>
+              <input id="stopPrice" type="number" min="0" step="0.00000001" placeholder="Required">
+            </label>
+
+            <label class="field">
+              <span>Take Profit Price</span>
+              <input id="takeProfitPrice" type="number" min="0" step="0.00000001" placeholder="Optional">
+            </label>
+          </div>
+
+          <div class="action-row">
+            <button id="latestPriceBtn" class="secondary-btn" type="button">Use Latest Price</button>
+            <button id="placeOrderBtn" class="primary-btn" type="button" disabled>Place Contract Order</button>
+          </div>
+
+          <div class="status-stack">
+            <div id="statusMessage" class="status-pill neutral">Waiting for input</div>
+            <div id="orderResponse" class="order-response" hidden></div>
+          </div>
+        </section>
+
+        <section class="panel panel-results">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">Calculator Output</p>
+              <h2>Position Result</h2>
+            </div>
+            <small class="panel-note">All values below are computed by /api/calc/position</small>
+          </div>
+
+          <div class="result-grid">
+            <article class="result-card result-focus">
+              <span class="result-label">Position USDT</span>
+              <strong id="positionUsdtValue" class="result-value">--</strong>
+              <small>Submit will recalculate with the newest contract market price</small>
+            </article>
+
+            <article class="result-card">
+              <span class="result-label">Qty</span>
+              <strong id="qtyValue" class="result-value">--</strong>
+            </article>
+
+            <article class="result-card">
+              <span class="result-label">Entry</span>
+              <strong id="entryValue" class="result-value">--</strong>
+            </article>
+
+            <article class="result-card">
+              <span class="result-label">Stop</span>
+              <strong id="stopValue" class="result-value">--</strong>
+            </article>
+
+            <article class="result-card">
+              <span class="result-label">Distance</span>
+              <strong id="distanceValue" class="result-value">--</strong>
+            </article>
+
+            <article class="result-card">
+              <span class="result-label">Estimated Loss</span>
+              <strong id="lossValue" class="result-value">--</strong>
+            </article>
+
+            <article class="result-card">
+              <span class="result-label">Estimated Profit</span>
+              <strong id="profitValue" class="result-value">--</strong>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    window.__RISK_SIZER_CONFIG__ = {
+      apiBaseUrl: "http://127.0.0.1:8000/api"
+    };
+  </script>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
